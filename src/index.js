@@ -10,14 +10,14 @@ const ByteBuffer = require("bytebuffer");
  * @param {Buffer|String}public_key publickey of recipient
  * @param {String}memo message to be encrypted
  */
-function encode(private_key, public_key, memo) {
+function encode(private_key, public_key, memo, testNonce) {
     if (!memo.startsWith('#')) {
         return memo;
     }
     memo = memo.substring(1);
     private_key = toPrivateObj(private_key);
     public_key = toPublicObj(public_key);
-    const { nonce, message, checksum } = Aes.encrypt(private_key, public_key, memo);
+    const { nonce, message, checksum } = Aes.encrypt(private_key, public_key, memo, testNonce);
     const mbuf = new ByteBuffer(ByteBuffer.DEFAULT_CAPACITY, ByteBuffer.LITTLE_ENDIAN);
     serializer.Types.EncryptedMemo(mbuf, {
         check: checksum,

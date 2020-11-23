@@ -14,13 +14,13 @@ const Long = ByteBuffer.Long;
     @property {Buffer} message - Plain text message
     @property {number} checksum - shared secret checksum
 */
-function encrypt(private_key, public_key, message) {
+function encrypt(private_key, public_key, message, nonce = uniqueNonce()) {
     // Change message to varint32 prefixed encoded string
     const mbuf = new ByteBuffer(ByteBuffer.DEFAULT_CAPACITY, ByteBuffer.LITTLE_ENDIAN);
     mbuf.writeVString(message);
     message = Buffer.from(mbuf.flip().toBinary());
     const aesKey = private_key.encapsulate(public_key);
-    return crypt(aesKey, uniqueNonce(), message);
+    return crypt(aesKey, nonce, message);
 }
 
 /**
@@ -50,11 +50,11 @@ function crypt(aesKey, nonce, message, checksum) {
     ebuf.append(aesKey.toString('binary'), 'binary');
     ebuf.flip();
     ebuf = Buffer.from(ebuf.toBinary(), 'binary');
-    const encryption_key = CryptoJS.SHA512(ebuf).toString()
+    const encryption_key = Crypto.cryptoUtils.sha512(ebuf)
     const iv = encryption_key.slice(32, 48);
     const tag = encryption_key.slice(0, 32);
     // check if first 64 bit of sha256 hash treated as uint64_t truncated to 32 bits.
-    let check = CryptoJS.SHA256(encryption_key).toString()
+    let check = Crypto.cryptoUtils.sha256(encryption_key)
     check = check.slice(0, 4);
     const cbuf = ByteBuffer.fromBinary(check.toString('binary'), ByteBuffer.LITTLE_ENDIAN);
     check = cbuf.readUint32();
@@ -81,13 +81,16 @@ function cryptoJsDecrypt(message, tag, iv) {
         mode: CryptoJS.mode.CBC
     }).toString(CryptoJS.enc.Utf8)
     return decipher;
+    // message = toBinaryBuffer(message)
+    // const decipher = CryptoOld.createDecipheriv('aes-256-cbc', tag, iv)
+    // message = Buffer.concat([decipher.update(message), decipher.final()])
+    // return message
 }
 /** This method does not use a checksum, the returned data must be validated some other way.
     @arg {string|Buffer} plaintext - binary format
     @return {Buffer} binary
 */
 function cryptoJsEncrypt(message, tag, iv) {
-    // console.log(message,tag,iv)
     assert(message, 'Missing plain text');
     const waMessage = CryptoJS.lib.WordArray.create(message).toString(CryptoJS.enc.Utf8)
     const cipher = CryptoJS.AES.encrypt(waMessage, CryptoJS.enc.Utf8.parse(tag), {
@@ -95,6 +98,10 @@ function cryptoJsEncrypt(message, tag, iv) {
         mode: CryptoJS.mode.CBC
     }).ciphertext.toString()
     return cipher;
+    // message = toBinaryBuffer(message)
+    // const cipher = CryptoOld.createCipheriv('aes-256-cbc', tag, iv)
+    // message = Buffer.concat([cipher.update(message), cipher.final()])
+    // return message
 }
 /** @return {string} unique 64 bit unsigned number string.  Being time based,
  * this is careful to never choose the same nonce twice.  This value could

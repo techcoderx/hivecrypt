@@ -50,6 +50,7 @@ function ripemd160(input) {
         input = CryptoJS.lib.WordArray.create(input)
     const hash = Buffer.from(CryptoJS.RIPEMD160(input).toString(CryptoJS.enc.Hex),'hex')
     return hash
+    // return CryptoOld.createHash('rmd160').update(input).digest()
 }
 /**
  * Return sha256 hash of input.
@@ -60,6 +61,17 @@ function sha256(input) {
         input = CryptoJS.lib.WordArray.create(input)
     const hash = Buffer.from(CryptoJS.SHA256(input).toString(CryptoJS.enc.Hex),'hex')
     return hash
+    // return CryptoOld.createHash('sha256').update(input).digest()
+}
+/**
+ * Return sha512 hash of input. 
+ */
+function sha512(input) {
+    if (typeof input !== 'string')
+        input = CryptoJS.lib.WordArray.create(input)
+    const hash = Buffer.from(CryptoJS.SHA256(input).toString(CryptoJS.enc.Hex),'hex')
+    return hash
+    // return CryptoOld.createHash('sha512').update(input).digest()
 }
 /**
  * Return 2-round sha256 hash of input.
@@ -192,6 +204,7 @@ module.exports = {
         doubleSha256,
         encodePrivate,
         ripemd160,
-        sha256
+        sha256,
+        sha512
     }
 }
