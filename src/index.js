@@ -64,5 +64,5 @@ function decode(private_key, memo) {
 const toPrivateObj = o => (o ? o.key ? o : crypto.PrivateKey.fromString(o) : o /* null or undefined*/);
 const toPublicObj = o => (o ? o.key ? o : crypto.PublicKey.fromString(o) : o /* null or undefined*/);
 
-if (typeof window != 'undefined') window.hivecrypt = { decode, encode };
-module.exports = { decode, encode };
+if (typeof window != 'undefined') window.hivecrypt = { decode, encode, randomWif: crypto.randomWif };
+module.exports = { decode, encode, randomWif: crypto.randomWif };

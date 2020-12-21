@@ -35,3 +35,9 @@ console.log(encrypted)
 let decrypted = hivecrypt.decode('5privatekey','#encryptedMessage')
 console.log(decrypted)
 ```
+
+#### Generate a random WIF-encoded private key
+```
+let randomWif = hivecrypt.randomWif()
+console.log(randomWif) // 5JBBPcSkrsvmAmvmex9aC4NNGvZsU87eePzpbFpD9PZRtgGoBKh
+```

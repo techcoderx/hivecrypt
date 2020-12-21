@@ -36,7 +36,8 @@ const assert = require("assert");
 const CryptoJS = require('crypto-js')
 const bs58 = require("bs58");
 const secp256k1 = require("secp256k1");
-const hkdf = require("futoin-hkdf");
+const hkdf = require("futoin-hkdf")
+const randomBytes = require('randombytes')
 /**
  * Network id used in WIF-encoding.
  */
@@ -194,6 +195,15 @@ class PrivateKey {
     createPublic(prefix) {
         return new PublicKey(secp256k1.publicKeyCreate(this.key), prefix);
     }
+
+    /** Return a WIF-encoded representation of the key. */
+    toString () {
+        return encodePrivate(Buffer.concat([NETWORK_ID, this.key]))
+    }
+}
+
+function randomWif() {
+    return new PrivateKey(randomBytes(32)).toString()
 }
 
 module.exports = {
@@ -206,5 +216,6 @@ module.exports = {
         ripemd160,
         sha256,
         sha512
-    }
+    },
+    randomWif
 }
