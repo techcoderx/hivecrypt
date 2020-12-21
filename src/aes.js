@@ -1,5 +1,4 @@
 const CryptoJS = require('crypto-js')
-const Crypto = require('./crypto')
 const randomBytes = require('randombytes')
 const assert = require("assert");
 const ByteBuffer = require('bytebuffer');
@@ -51,11 +50,11 @@ function crypt(aesKey, nonce, message, checksum) {
     ebuf.append(aesKey.toString('binary'), 'binary');
     ebuf.flip();
     ebuf = Buffer.from(ebuf.toBinary(), 'binary');
-    const encryption_key = Crypto.cryptoUtils.sha512(ebuf)
+    const encryption_key = CryptoJS.SHA512(ebuf).toString()
     const iv = encryption_key.slice(32, 48);
     const tag = encryption_key.slice(0, 32);
     // check if first 64 bit of sha256 hash treated as uint64_t truncated to 32 bits.
-    let check = Crypto.cryptoUtils.sha256(encryption_key)
+    let check = CryptoJS.SHA256(encryption_key).toString()
     check = check.slice(0, 4);
     const cbuf = ByteBuffer.fromBinary(check.toString('binary'), ByteBuffer.LITTLE_ENDIAN);
     check = cbuf.readUint32();
