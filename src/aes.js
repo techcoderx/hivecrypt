@@ -1,4 +1,5 @@
 const CryptoJS = require('crypto-js')
+const Crypto = require('./crypto')
 const randomBytes = require('randombytes')
 const assert = require("assert");
 const ByteBuffer = require('bytebuffer');
