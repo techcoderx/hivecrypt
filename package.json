@@ -1,6 +1,6 @@
 {
   "name": "hivecrypt",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "description": "A small JavaScript module for Hive memo encryption and decryption",
   "main": "src/index.js",
   "scripts": {
