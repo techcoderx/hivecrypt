@@ -81,6 +81,13 @@ function doubleSha256(input) {
     return sha256(sha256(input));
 }
 /**
+ * Encode bs58+ripemd160-checksum encoded public key.
+ */
+function encodePublic(key, prefix) {
+    const checksum = ripemd160(key)
+    return prefix + bs58.encode(Buffer.concat([key, checksum.slice(0, 4)]))
+}
+/**
  * Decode bs58+ripemd160-checksum encoded public key.
  */
 function decodePublic(encodedKey) {
@@ -135,6 +142,12 @@ class PublicKey {
     static fromString(wif) {
         const { key, prefix } = decodePublic(wif);
         return new PublicKey(key, prefix);
+    }
+    /**
+     * Convert public key buffer to WIF encoding
+     */
+    toString() {
+        return encodePublic(this.key,this.prefix)
     }
     /**
      * Create a new instance.
