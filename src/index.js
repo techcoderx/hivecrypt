@@ -27,7 +27,7 @@ function encode(private_key, public_key, memo, testNonce) {
         to: public_key
     });
     mbuf.flip();
-    const data = Buffer.from(mbuf.toBuffer());
+    const data = Buffer.from(mbuf.toBuffer(),'binary');
     return '#' + bs58.encode(data);
 }
 /**

@@ -36,7 +36,9 @@ const assert = require("assert");
 const CryptoJS = require('crypto-js')
 const bs58 = require("bs58");
 const secp256k1 = require("secp256k1");
-const hkdf = require("futoin-hkdf")
+const ecurve = require('ecurve')
+const secp256k1Curve = ecurve.getCurveByName('secp256k1')
+const bigInteger = require('bigi')
 const randomBytes = require('randombytes')
 /**
  * Network id used in WIF-encoding.
@@ -70,7 +72,7 @@ function sha256(input) {
 function sha512(input) {
     if (typeof input !== 'string')
         input = CryptoJS.lib.WordArray.create(input)
-    const hash = Buffer.from(CryptoJS.SHA256(input).toString(CryptoJS.enc.Hex),'hex')
+    const hash = Buffer.from(CryptoJS.SHA512(input).toString(CryptoJS.enc.Hex),'hex')
     return hash
     // return CryptoOld.createHash('sha512').update(input).digest()
 }
@@ -92,20 +94,20 @@ function encodePublic(key, prefix) {
  */
 function decodePublic(encodedKey) {
     const prefix = encodedKey.slice(0, 3);
-    assert.equal(prefix.length, 3, "public key invalid prefix");
+    assert.strictEqual(prefix.length, 3, "public key invalid prefix");
     encodedKey = encodedKey.slice(3);
     const buffer = bs58.decode(encodedKey);
     const checksum = buffer.slice(-4);
     const key = buffer.slice(0, -4);
     const checksumVerify = ripemd160(key).slice(0, 4);
-    assert.deepEqual(checksumVerify, checksum, "public key checksum mismatch");
+    assert.strictEqual(checksumVerify, checksum, "public key checksum mismatch");
     return { key, prefix };
 }
 /**
  * Encode bs58+doubleSha256-checksum private key.
  */
 function encodePrivate(key) {
-    assert.equal(key.readUInt8(0), 0x80, "private key network id mismatch");
+    assert.strictEqual(key.readUInt8(0), 0x80, "private key network id mismatch");
     const checksum = doubleSha256(key);
     return bs58.encode(Buffer.concat([key, checksum.slice(0, 4)]));
 }
@@ -114,11 +116,11 @@ function encodePrivate(key) {
  */
 function decodePrivate(encodedKey) {
     const buffer = bs58.decode(encodedKey);
-    assert.deepEqual(buffer.slice(0, 1), NETWORK_ID, "private key network id mismatch");
+    assert.deepStrictEqual(buffer.slice(0, 1), NETWORK_ID, "private key network id mismatch");
     const checksum = buffer.slice(-4);
     const key = buffer.slice(0, -4);
     const checksumVerify = doubleSha256(key).slice(0, 4);
-    assert.deepEqual(checksumVerify, checksum, "private key checksum mismatch");
+    assert.deepStrictEqual(checksumVerify, checksum, "private key checksum mismatch");
     return key;
 }
 
@@ -159,15 +161,6 @@ class PublicKey {
         else {
             return PublicKey.fromString(value);
         }
-    }
-    decapsulate(priv) {
-        const master = Buffer.concat([
-            this.uncompressed,
-            priv.multiply(this),
-        ]);
-        return hkdf(master, 64, {
-            hash: "SHA-512",
-        });
     }
 }
 
@@ -212,6 +205,17 @@ class PrivateKey {
     /** Return a WIF-encoded representation of the key. */
     toString () {
         return encodePrivate(Buffer.concat([NETWORK_ID, this.key]))
+    }
+
+    get_shared_secret(public_key) {
+        let KBP = ecurve.Point.fromAffine(
+            secp256k1Curve,
+            bigInteger.fromBuffer(public_key.uncompressed.slice(1,33)),
+            bigInteger.fromBuffer(public_key.uncompressed.slice(33,65))
+        )
+        let P = KBP.multiply(bigInteger.fromBuffer(this.key))
+        let S = P.affineX.toBuffer({size:32})
+        return sha512(S)
     }
 }
 
