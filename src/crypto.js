@@ -100,7 +100,7 @@ function decodePublic(encodedKey) {
     const checksum = buffer.slice(-4);
     const key = buffer.slice(0, -4);
     const checksumVerify = ripemd160(key).slice(0, 4);
-    assert.strictEqual(checksumVerify, checksum, "public key checksum mismatch");
+    assert.deepStrictEqual(checksumVerify, checksum, "public key checksum mismatch");
     return { key, prefix };
 }
 /**
