@@ -134,10 +134,6 @@ class PublicKey {
         this.uncompressed = Buffer.from(secp256k1.publicKeyConvert(key, false));
         assert(secp256k1.publicKeyVerify(key), "invalid public key");
     }
-    static fromBuffer(key) {
-        assert(secp256k1.publicKeyVerify(key), "invalid buffer as public key");
-        return { key };
-    }
     /**
      * Create a new instance from a WIF-encoded key.
      */
@@ -179,19 +175,7 @@ class PrivateKey {
     static fromString(wif) {
         return new PrivateKey(decodePrivate(wif).slice(1));
     }
-    /**
-     * HMAC based key derivation function
-     * @param pub recipient publickey
-     */
-    encapsulate(pub) {
-        const master = Buffer.concat([
-            pub.uncompressed,
-            this.multiply(pub),
-        ]);
-        return hkdf(master, 64, {
-            hash: "SHA-512",
-        });
-    }
+    
     multiply(pub) {
         return Buffer.from(secp256k1.publicKeyTweakMul(pub.key, this.secret, false));
     }
