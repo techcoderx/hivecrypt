@@ -134,6 +134,12 @@ class PublicKey {
         this.uncompressed = Buffer.from(secp256k1.publicKeyConvert(key, false));
         assert(secp256k1.publicKeyVerify(key), "invalid public key");
     }
+
+    static fromBuffer(key) {
+        assert(secp256k1.publicKeyVerify(key), "invalid buffer as public key");
+        return { key };
+    }
+
     /**
      * Create a new instance from a WIF-encoded key.
      */
