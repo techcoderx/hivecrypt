@@ -96,7 +96,7 @@ function decodePublic(encodedKey) {
     const prefix = encodedKey.slice(0, 3);
     assert.strictEqual(prefix.length, 3, "public key invalid prefix");
     encodedKey = encodedKey.slice(3);
-    const buffer = bs58.decode(encodedKey);
+    const buffer = Buffer.from(bs58.decode(encodedKey));
     const checksum = buffer.slice(-4);
     const key = buffer.slice(0, -4);
     const checksumVerify = ripemd160(key).slice(0, 4);
@@ -115,7 +115,7 @@ function encodePrivate(key) {
  * Decode bs58+doubleSha256-checksum encoded private key.
  */
 function decodePrivate(encodedKey) {
-    const buffer = bs58.decode(encodedKey);
+    const buffer = Buffer.from(bs58.decode(encodedKey));
     assert.deepStrictEqual(buffer.slice(0, 1), NETWORK_ID, "private key network id mismatch");
     const checksum = buffer.slice(-4);
     const key = buffer.slice(0, -4);
