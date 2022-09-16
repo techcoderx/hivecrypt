@@ -1,6 +1,6 @@
 {
   "name": "hivecrypt",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "A small JavaScript module for Hive memo encryption and decryption",
   "main": "src/index.js",
   "scripts": {
@@ -22,17 +22,17 @@
   "dependencies": {
     "assert": "^2.0.0",
     "bigi": "^1.4.2",
-    "bs58": "^4.0.1",
+    "bs58": "^5.0.0",
     "bytebuffer": "^5.0.1",
-    "crypto-js": "^4.0.0",
+    "crypto-js": "^4.1.1",
     "ecurve": "^1.0.6",
     "randombytes": "^2.1.0",
-    "secp256k1": "^4.0.2"
+    "secp256k1": "^4.0.3"
   },
   "devDependencies": {
     "browserify": "^17.0.0",
     "eslint": "^7.14.0",
-    "tinyify": "^3.0.0"
+    "tinyify": "^3.1.0"
   },
   "bugs": {
     "url": "https://github.com/techcoderx/hivecrypt/issues"
