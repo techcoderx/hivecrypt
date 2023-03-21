@@ -2,7 +2,7 @@
 
 A small JavaScript module for Hive memo encryption and decryption.
 
-Adapted from [this pull request](https://peakd.com/hive-139531/@tngflx/contribution-to-dhive-added-memo-encryption-and-decrypt-feature) that was never merged into [dhive](https://gitlab.syncad.com/hive/dhive). Implemented using [Crypto-JS](https://github.com/brix/crypto-js) such that it is compatible with all JavaScript environments including Electron JS apps.
+Adapted from [this pull request](https://peakd.com/hive-139531/@tngflx/contribution-to-dhive-added-memo-encryption-and-decrypt-feature) that was ~~never~~ merged into [dhive](https://gitlab.syncad.com/hive/dhive). Implemented using [Crypto-JS](https://github.com/brix/crypto-js) such that it is compatible with all JavaScript environments including Electron JS apps.
 
 #### Why was this created?
 
