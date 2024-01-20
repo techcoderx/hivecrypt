@@ -1,5 +1,5 @@
 export class PublicKey {
-    constructor(key: Buffer, prefix: string)
+    constructor(key: Buffer, prefix?: string)
     static fromBuffer(key: Buffer): { key: Buffer }
     static fromString(wif: string): PublicKey
     toString(): string
@@ -9,7 +9,7 @@ export class PublicKey {
 export class PrivateKey {
     constructor(key: Buffer)
     static fromString(wif: string): PrivateKey
-    createPublic(prefix: string): PublicKey
+    createPublic(prefix?: string): PublicKey
     toString(): string
     get_shared_secret(public_key: PublicKey): Buffer
 }
