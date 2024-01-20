@@ -32,7 +32,7 @@
  * You acknowledge that this software is not designed, licensed or intended for use
  * in the design, construction, operation or maintenance of any military facility.
  */
-const assert = require("assert");
+// const assert = require("assert");
 const CryptoJS = require('crypto-js')
 const bs58 = require("bs58");
 const secp256k1 = require("secp256k1");
@@ -94,20 +94,20 @@ function encodePublic(key, prefix) {
  */
 function decodePublic(encodedKey) {
     const prefix = encodedKey.slice(0, 3);
-    assert.strictEqual(prefix.length, 3, "public key invalid prefix");
+    // assert.strictEqual(prefix.length, 3, "public key invalid prefix");
     encodedKey = encodedKey.slice(3);
     const buffer = Buffer.from(bs58.decode(encodedKey));
     const checksum = buffer.slice(-4);
     const key = buffer.slice(0, -4);
     const checksumVerify = ripemd160(key).slice(0, 4);
-    assert.deepStrictEqual(checksumVerify, checksum, "public key checksum mismatch");
+    // assert.deepStrictEqual(checksumVerify, checksum, "public key checksum mismatch");
     return { key, prefix };
 }
 /**
  * Encode bs58+doubleSha256-checksum private key.
  */
 function encodePrivate(key) {
-    assert.strictEqual(key.readUInt8(0), 0x80, "private key network id mismatch");
+    // assert.strictEqual(key.readUInt8(0), 0x80, "private key network id mismatch");
     const checksum = doubleSha256(key);
     return bs58.encode(Buffer.concat([key, checksum.slice(0, 4)]));
 }
@@ -116,11 +116,11 @@ function encodePrivate(key) {
  */
 function decodePrivate(encodedKey) {
     const buffer = Buffer.from(bs58.decode(encodedKey));
-    assert.deepStrictEqual(buffer.slice(0, 1), NETWORK_ID, "private key network id mismatch");
+    // assert.deepStrictEqual(buffer.slice(0, 1), NETWORK_ID, "private key network id mismatch");
     const checksum = buffer.slice(-4);
     const key = buffer.slice(0, -4);
     const checksumVerify = doubleSha256(key).slice(0, 4);
-    assert.deepStrictEqual(checksumVerify, checksum, "private key checksum mismatch");
+    // assert.deepStrictEqual(checksumVerify, checksum, "private key checksum mismatch");
     return key;
 }
 
@@ -132,11 +132,11 @@ class PublicKey {
         this.key = key;
         this.prefix = prefix;
         this.uncompressed = Buffer.from(secp256k1.publicKeyConvert(key, false));
-        assert(secp256k1.publicKeyVerify(key), "invalid public key");
+        // assert(secp256k1.publicKeyVerify(key), "invalid public key");
     }
 
     static fromBuffer(key) {
-        assert(secp256k1.publicKeyVerify(key), "invalid buffer as public key");
+        // assert(secp256k1.publicKeyVerify(key), "invalid buffer as public key");
         return { key };
     }
 
@@ -173,7 +173,7 @@ class PrivateKey {
     constructor(key) {
         this.key = key;
         this.secret = key;
-        assert(secp256k1.privateKeyVerify(key), "invalid private key");
+        // assert(secp256k1.privateKeyVerify(key), "invalid private key");
     }
     /**
      * Create a new instance from a WIF-encoded key.

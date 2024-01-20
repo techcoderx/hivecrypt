@@ -1,6 +1,6 @@
 {
   "name": "hivecrypt",
-  "version": "2.0.8",
+  "version": "2.0.9",
   "description": "A small JavaScript module for Hive memo encryption and decryption",
   "main": "src/index.js",
   "scripts": {
@@ -20,7 +20,6 @@
   "author": "techcoderx",
   "license": "MIT",
   "dependencies": {
-    "assert": "^2.1.0",
     "bigi": "^1.4.2",
     "bs58": "^5.0.0",
     "bytebuffer": "^5.0.1",

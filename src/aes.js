@@ -1,6 +1,6 @@
 const CryptoJS = require('crypto-js')
 const randomBytes = require('randombytes')
-const assert = require("assert");
+// const assert = require("assert");
 const ByteBuffer = require('bytebuffer');
 const { cryptoUtils } = require('./crypto')
 const Long = ByteBuffer.Long;
@@ -78,7 +78,7 @@ function crypt(private_key, public_key, nonce, message, checksum) {
     @return {Buffer}
 */
 function cryptoJsDecrypt(message, key, iv) {
-    assert(message, 'Missing cipher text');
+    // assert(message, 'Missing cipher text');
     message = toBinaryBuffer(message)
     const waMessage = CryptoJS.lib.WordArray.create(message)
     const waKey = CryptoJS.lib.WordArray.create(key)
@@ -107,7 +107,7 @@ function cryptoJsDecrypt(message, key, iv) {
     @return {Buffer} binary
 */
 function cryptoJsEncrypt(message, key, iv) {
-    assert(message, 'Missing plain text');
+    // assert(message, 'Missing plain text');
     message = toBinaryBuffer(message)
     const waMessage = CryptoJS.lib.WordArray.create(message)
     const cipher = CryptoJS.AES.encrypt(waMessage, CryptoJS.lib.WordArray.create(key), {
